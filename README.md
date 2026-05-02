@@ -1,10 +1,5 @@
 # HardGPT
 
-<p align="center">
-  <img src="img/etched-pcb.png" alt="Etched PCB" width="48%" />
-  <img src="img/film.JPG"       alt="Film" width="48%" />
-</p>
-
 A character-level GPT running entirely on a TI MSPM0G3507 Cortex-M0+ — no host
 PC, no network, no accelerator. Press **Generate** and the chip composes
 fake-Shakespeare one character at a time on a 16x2 LCD, beeping at the start
@@ -15,6 +10,11 @@ The model is a 3-layer transformer (4 heads, 48 embedding dims, block size 48,
 65-character vocab) trained on the tiny-shakespeare corpus. Weights are int8
 symmetric per-output-channel quantized so the whole network fits in flash, and
 the KV cache is also int8 to keep SRAM use sane during generation.
+
+<p align="center">
+  <img src="img/etched-pcb.png" alt="Etched PCB" width="48%" />
+  <img src="img/film.JPG"       alt="Film" width="48%" />
+</p>
 
 ## Hardware
 
