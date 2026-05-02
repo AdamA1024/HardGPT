@@ -2,7 +2,7 @@
 
 <p align="center">
   <img src="img/etched-pcb.png" alt="Etched PCB" width="48%" />
-  <img src="img/film.JPG"       alt="Photoresist film" width="48%" />
+  <img src="img/film.JPG"       alt="Film" width="48%" />
 </p>
 
 A character-level GPT running entirely on a TI MSPM0G3507 Cortex-M0+ — no host
