@@ -19,3 +19,10 @@ wheels/
 # Virtual environments
 .venv/
 training/.venv/
+
+# KiCad
+*-backups/
+fp-info-cache
+*.kicad_prl
+drc_*.html
+drc_*.json
