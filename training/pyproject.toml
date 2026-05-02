@@ -1,0 +1,12 @@
+[project]
+name = "hardgpt-training"
+version = "0.1.0"
+description = "training and weight-export pipeline for HardGPT (mspm0g3507)"
+requires-python = ">=3.13"
+dependencies = [
+    "numpy>=2.4.4",
+    "requests>=2.33.1",
+    "tiktoken>=0.12.0",
+    "torch>=2.11.0",
+    "tqdm>=4.67.3",
+]
