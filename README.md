@@ -26,10 +26,6 @@ HardGPT/
 ├── hardgpt.syscfg      sysconfig project: clocks, GPIO, I2C
 ├── targetConfigs/      CCS debug configs for the launchpad
 ├── pcb/                kicad project for the board
-│   ├── hardgpt.kicad_pro
-│   ├── hardgpt.kicad_sch
-│   ├── hardgpt.kicad_pcb
-│   └── preview_top.png, preview_bottom.png
 ├── img/                photos used in this readme
 └── training/           offline training + weight export pipeline
 ```
