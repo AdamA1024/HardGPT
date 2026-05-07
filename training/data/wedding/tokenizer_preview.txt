@@ -1,0 +1,23 @@
+vocab_size = 2048
+special_tokens = {'<pad>': 0, '<eos>': 1, '<bos>': 2, '<<SHAKESPEARE>>': 3, '<<SONNET>>': 4, '<<AUSTEN>>': 5, '<<BRONTE>>': 6, '<<VICTORIAN_POET>>': 7, '<<ROMANTIC_POET>>': 8, '<<DICKINSON>>': 9, '<<WHITMAN>>': 10, '<<RUMI>>': 11, '<<FREEFORM>>': 12, '<<VOW>>': 13, '<<TOAST>>': 14}
+
+INPUT:  "Shall I compare thee to a summer's day?\n"
+IDS:    [65, 1915, 316, 795, 560, 857, 301, 273, 1604, 897, 636, 646, 45, 213]
+TOKENS: ['S', 'hall', 'ĠI', 'Ġcomp', 'are', 'Ġthee', 'Ġto', 'Ġa', 'Ġsum', 'mer', "'s", 'Ġday', '?', 'Ċ']
+DECODE: "Shall I compare thee to a summer's day?\n"
+
+INPUT:  'It is a truth universally acknowledged, that a single man in possession of a good fortune,\n'
+IDS:    [837, 366, 273, 1633, 517, 87, 984, 679, 273, 453, 509, 782, 920, 26, 350, 273, 1300, 318, 460, 310, 1150, 389, 339, 295, 273, 674, 1745, 1376, 26, 213]
+TOKENS: ['It', 'Ġis', 'Ġa', 'Ġtruth', 'Ġun', 'i', 'vers', 'ally', 'Ġa', 'ck', 'now', 'led', 'ged', ',', 'Ġthat', 'Ġa', 'Ġsing', 'le', 'Ġman', 'Ġin', 'Ġposs', 'ess', 'ion', 'Ġof', 'Ġa', 'Ġgood', 'Ġfort', 'une', ',', 'Ċ']
+DECODE: 'It is a truth universally acknowledged, that a single man in possession of a good fortune,\n'
+
+INPUT:  'How do I love thee? Let me count the ways.\n'
+IDS:    [1396, 456, 316, 670, 857, 45, 469, 338, 382, 1257, 278, 866, 97, 28, 213]
+TOKENS: ['How', 'Ġdo', 'ĠI', 'Ġlove', 'Ġthee', '?', 'ĠL', 'et', 'Ġme', 'Ġcount', 'Ġthe', 'Ġway', 's', '.', 'Ċ']
+DECODE: 'How do I love thee? Let me count the ways.\n'
+
+INPUT:  '<<SONNET>>\nLove looks not with the eyes, but with the mind;\n'
+IDS:    [4, 213, 58, 727, 676, 97, 361, 359, 278, 819, 26, 431, 359, 278, 928, 41, 213]
+TOKENS: ['<<SONNET>>', 'Ċ', 'L', 'ove', 'Ġlook', 's', 'Ġnot', 'Ġwith', 'Ġthe', 'Ġeyes', ',', 'Ġbut', 'Ġwith', 'Ġthe', 'Ġmind', ';', 'Ċ']
+DECODE: '\nLove looks not with the eyes, but with the mind;\n'
+

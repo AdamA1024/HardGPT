@@ -1,0 +1,282 @@
+[
+  {
+    "id": 1041,
+    "title": "Shakespeare's Sonnets",
+    "author": "William Shakespeare",
+    "style": "sonnet",
+    "chars": 96209,
+    "words": 17676
+  },
+  {
+    "id": 1513,
+    "title": "Romeo and Juliet",
+    "author": "William Shakespeare",
+    "style": "shakespeare",
+    "chars": 142435,
+    "words": 25958
+  },
+  {
+    "id": 1514,
+    "title": "A Midsummer Night's Dream",
+    "author": "William Shakespeare",
+    "style": "shakespeare",
+    "chars": 96709,
+    "words": 17284
+  },
+  {
+    "id": 1519,
+    "title": "Much Ado About Nothing",
+    "author": "William Shakespeare",
+    "style": "shakespeare",
+    "chars": 122742,
+    "words": 22659
+  },
+  {
+    "id": 1526,
+    "title": "Twelfth Night",
+    "author": "William Shakespeare",
+    "style": "shakespeare",
+    "chars": 115448,
+    "words": 21359
+  },
+  {
+    "id": 1524,
+    "title": "Hamlet",
+    "author": "William Shakespeare",
+    "style": "shakespeare",
+    "chars": 177932,
+    "words": 31960
+  },
+  {
+    "id": 1112,
+    "title": "The Tempest",
+    "author": "William Shakespeare",
+    "style": "shakespeare",
+    "chars": 139682,
+    "words": 25857
+  },
+  {
+    "id": 1342,
+    "title": "Pride and Prejudice",
+    "author": "Jane Austen",
+    "style": "austen",
+    "chars": 728265,
+    "words": 127359
+  },
+  {
+    "id": 161,
+    "title": "Sense and Sensibility",
+    "author": "Jane Austen",
+    "style": "austen",
+    "chars": 670454,
+    "words": 118860
+  },
+  {
+    "id": 158,
+    "title": "Emma",
+    "author": "Jane Austen",
+    "style": "austen",
+    "chars": 880173,
+    "words": 157558
+  },
+  {
+    "id": 105,
+    "title": "Persuasion",
+    "author": "Jane Austen",
+    "style": "austen",
+    "chars": 464719,
+    "words": 83335
+  },
+  {
+    "id": 141,
+    "title": "Mansfield Park",
+    "author": "Jane Austen",
+    "style": "austen",
+    "chars": 883772,
+    "words": 159713
+  },
+  {
+    "id": 121,
+    "title": "Northanger Abbey",
+    "author": "Jane Austen",
+    "style": "austen",
+    "chars": 433853,
+    "words": 77223
+  },
+  {
+    "id": 1260,
+    "title": "Jane Eyre",
+    "author": "Charlotte Bronte",
+    "style": "bronte",
+    "chars": 1022194,
+    "words": 185390
+  },
+  {
+    "id": 768,
+    "title": "Wuthering Heights",
+    "author": "Emily Bronte",
+    "style": "bronte",
+    "chars": 645458,
+    "words": 115945
+  },
+  {
+    "id": 767,
+    "title": "Agnes Grey",
+    "author": "Anne Bronte",
+    "style": "bronte",
+    "chars": 374274,
+    "words": 67831
+  },
+  {
+    "id": 2002,
+    "title": "Sonnets from the Portuguese",
+    "author": "Elizabeth Barrett Browning",
+    "style": "victorian_poet",
+    "chars": 32166,
+    "words": 5567
+  },
+  {
+    "id": 23684,
+    "title": "Endymion",
+    "author": "John Keats",
+    "style": "romantic_poet",
+    "chars": 251549,
+    "words": 41616
+  },
+  {
+    "id": 2490,
+    "title": "Lamia, Isabella, ...",
+    "author": "John Keats",
+    "style": "romantic_poet",
+    "chars": 34643,
+    "words": 5420
+  },
+  {
+    "id": 4800,
+    "title": "The Complete Poetical Works",
+    "author": "Percy Bysshe Shelley",
+    "style": "romantic_poet",
+    "chars": 2296727,
+    "words": 368813
+  },
+  {
+    "id": 8861,
+    "title": "Poems",
+    "author": "William Wordsworth",
+    "style": "romantic_poet",
+    "chars": 733177,
+    "words": 119628
+  },
+  {
+    "id": 19221,
+    "title": "Goblin Market, The Prince's Progress, and Other Poems",
+    "author": "Christina Rossetti",
+    "style": "victorian_poet",
+    "chars": 484562,
+    "words": 75580
+  },
+  {
+    "id": 8601,
+    "title": "Idylls of the King",
+    "author": "Alfred, Lord Tennyson",
+    "style": "victorian_poet",
+    "chars": 576411,
+    "words": 101977
+  },
+  {
+    "id": 13619,
+    "title": "The Princess",
+    "author": "Alfred, Lord Tennyson",
+    "style": "victorian_poet",
+    "chars": 407034,
+    "words": 70980
+  },
+  {
+    "id": 1322,
+    "title": "Leaves of Grass",
+    "author": "Walt Whitman",
+    "style": "whitman",
+    "chars": 736844,
+    "words": 121712
+  },
+  {
+    "id": 12242,
+    "title": "Poems by Emily Dickinson, Series One",
+    "author": "Emily Dickinson",
+    "style": "dickinson",
+    "chars": 174659,
+    "words": 31204
+  },
+  {
+    "id": 12243,
+    "title": "Poems by Emily Dickinson, Series Two",
+    "author": "Emily Dickinson",
+    "style": "dickinson",
+    "chars": 868904,
+    "words": 151450
+  },
+  {
+    "id": 12241,
+    "title": "Poems by Emily Dickinson, Series Three",
+    "author": "Emily Dickinson",
+    "style": "dickinson",
+    "chars": 53591,
+    "words": 9495
+  },
+  {
+    "id": 9863,
+    "title": "Poems and Songs",
+    "author": "Robert Burns",
+    "style": "romantic_poet",
+    "chars": 682431,
+    "words": 121138
+  },
+  {
+    "id": 246,
+    "title": "Rubaiyat of Omar Khayyam",
+    "author": "Omar Khayyam (tr. FitzGerald)",
+    "style": "rumi",
+    "chars": 68155,
+    "words": 11719
+  },
+  {
+    "id": 2400,
+    "title": "The Mathnawi (Book I)",
+    "author": "Jalalu'd-Din Rumi (tr. Whinfield)",
+    "style": "rumi",
+    "chars": 446182,
+    "words": 77449
+  },
+  {
+    "id": 135,
+    "title": "Les Miserables",
+    "author": "Victor Hugo (tr. Hapgood)",
+    "style": "freeform",
+    "chars": 3225522,
+    "words": 565612
+  },
+  {
+    "id": 2641,
+    "title": "A Room with a View",
+    "author": "E. M. Forster",
+    "style": "freeform",
+    "chars": 375041,
+    "words": 66599
+  },
+  {
+    "id": 174,
+    "title": "The Picture of Dorian Gray",
+    "author": "Oscar Wilde",
+    "style": "freeform",
+    "chars": 429221,
+    "words": 78979
+  },
+  {
+    "id": 844,
+    "title": "The Importance of Being Earnest",
+    "author": "Oscar Wilde",
+    "style": "freeform",
+    "chars": 117276,
+    "words": 20714
+  }
+]

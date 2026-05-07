@@ -26,3 +26,11 @@ fp-info-cache
 *.kicad_prl
 drc_*.html
 drc_*.json
+training/data/wedding/raw/
+  training/nanoGPT/out-wedding/
+  training/nanoGPT/out-wedding-smoke/
+  training/nanoGPT/__pycache__/
+  EOF
+
+
+
