@@ -2,6 +2,10 @@
 Tokenize the wedding corpus with the trained BPE and write `train.bin`,
 `val.bin`, and `meta.pkl` in the format `nanoGPT/train.py` expects.
 
+Inserts `<eos>` (token id 1) at every blank-line boundary so the model
+learns where complete units end. The firmware sampler can then stop cleanly
+when the model emits `<eos>`, instead of always hitting `max_new_tokens`.
+
 Usage:
     cd training
     uv run python data/wedding/prepare.py
@@ -14,19 +18,13 @@ Inputs:
 Outputs:
     data/wedding/train.bin           uint16 token ids
     data/wedding/val.bin             uint16 token ids
-    data/wedding/meta.pkl            extended with split sizes
-
-Format choice — uint16 means our tokenizer must have <= 65536 tokens. Our
-target is 2048, so this is comfortable and matches the existing
-`data/shakespeare_char` convention.
-
-Split: 99/1 train/val. The corpus is ~3.3 M words / ~18 MB; even 1% gives a
-val set of ~30 k tokens, plenty for a stable val-loss signal.
+    data/wedding/meta.pkl            extended with split sizes + n_eos
 """
 
 from __future__ import annotations
 
 import pickle
+import re
 import sys
 from pathlib import Path
 
@@ -41,6 +39,8 @@ TRAIN_BIN = HERE / "train.bin"
 VAL_BIN = HERE / "val.bin"
 
 VAL_FRACTION = 0.01
+EOS_ID = 1  # must match SPECIAL_TOKENS order in train_tokenizer.py
+SEGMENT_SPLIT = re.compile(r"\n\s*\n+")
 
 
 def main() -> int:
@@ -65,10 +65,25 @@ def main() -> int:
           f"({CORPUS.stat().st_size/1024/1024:.2f} MB)")
     text = CORPUS.read_text(encoding="utf-8")
 
-    print("Encoding...")
-    encoded = tok.encode(text)
-    ids = encoded.ids
-    print(f"  total tokens: {len(ids):,}")
+    # Split on blank lines so we can insert <eos> between paragraph-shaped
+    # units. Encoding each segment separately is fine for byte-level BPE —
+    # the model just sees a stream of token ids with EOS markers between
+    # complete thoughts.
+    segments = [s.strip() for s in SEGMENT_SPLIT.split(text)]
+    segments = [s for s in segments if s]
+    print(f"Splitting into {len(segments):,} segments at blank-line boundaries")
+
+    print("Encoding (with <eos> between segments)...")
+    all_ids: list[int] = []
+    n_eos = 0
+    for seg in segments:
+        enc = tok.encode(seg)
+        all_ids.extend(enc.ids)
+        all_ids.append(EOS_ID)
+        n_eos += 1
+    ids = all_ids
+    print(f"  total tokens: {len(ids):,}  (incl. {n_eos:,} <eos> markers)")
+    print(f"  mean segment length: {(len(ids) - n_eos) / max(n_eos, 1):.1f} tokens")
 
     arr = np.asarray(ids, dtype=np.uint16)
     n = len(arr)
@@ -91,6 +106,8 @@ def main() -> int:
         "tokenizer_path": str(TOKENIZER.relative_to(HERE.parent.parent)),
         "n_train_tokens": int(len(train_ids)),
         "n_val_tokens": int(len(val_ids)),
+        "n_eos": int(n_eos),
+        "eos_id": EOS_ID,
     })
     with META_PATH.open("wb") as f:
         pickle.dump(meta, f)

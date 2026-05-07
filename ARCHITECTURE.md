@@ -188,9 +188,9 @@ instead of a text-generation toy.
 
 | Decision | Choice | Why |
 |---|---|---|
-| MCU | **RP2350B** (Cortex-M33 dual-core w/ FPU + DSP, 520 KB SRAM, 16 MB QSPI flash, optional PSRAM) | Keeps the bare-metal, "AI on a PCB" novelty; the FPU+DSP gets us roughly 10x the existing inference rate without rewriting math primitives. Hand-solderable QFN-80, $1 chip — a Broadcom ASIC engineer will appreciate that it's an open silicon datasheet. **Alternative: ESP32-S3-WROOM-1U-N16R8** if PSRAM-backed larger model matters more than FPU. |
-| Tokenizer | **2,048-entry custom BPE** trained on the romance corpus | Char-level can't produce coherent vows in 48 tokens of context. BPE at 2K keeps `wte` ~256 KB at `n_embd=128, int8`, fits comfortably and dramatically lifts output quality per inference step. |
-| Model | **6 layers, 8 heads, 256 embd, 256 ctx** (~5 M int8 params, ~5 MB) | Sized to fit inside 16 MB QSPI flash with room for assets, and small enough that single-token latency stays human-readable on a 150 MHz M33 with FPU. |
+| MCU | **RP2350B** + **W25Q128 SOIC-8 QSPI flash** (Cortex-M33 dual-core w/ FPU + DSP, 520 KB internal SRAM, 16 MB external QSPI flash via the canonical Pico-style boot path) | Bare silicon you can see — the QFN-80 chip plus a fingernail-sized companion flash. RP2350's bootrom handles QSPI XIP transparently, so no driver code, no second bus, no PSRAM. A Broadcom ASIC engineer will appreciate the open silicon datasheet. |
+| Tokenizer | **2,048-entry custom BPE** trained on the romance corpus, with `<eos>` injected at every paragraph boundary | Char-level can't produce coherent vows in 48 tokens of context. BPE at 2K keeps `wte` ~512 KB at `n_embd=256, int8` and dramatically lifts output quality per inference step. `<eos>` lets the firmware stop on natural unit boundaries instead of always truncating. |
+| Model | **6 layers, 8 heads, 256 embd, 128 ctx** (~5.3 M int8 params, ~5.3 MB flash, ~440 KB peak SRAM) | Wider over longer-context: short wedding quotes don't need long context, so the SRAM freed by `ctx=128` (vs 256) is spent on a wider model (256 vs 192 embd). Fits the 520 KB internal SRAM cap with ~80 KB headroom. Single-token latency stays at typewriter rate on a 150 MHz M33 with FPU. |
 | Display | **2.42" 128x64 SSD1309 OLED** (or 2.13" e-paper alternative) | Lets a whole sonnet line fit on screen; white-on-black looks like engraved type. Etched-PCB + OLED + brass standoffs reads as a wedding object, not a hobbyist demo. |
 | Persistence of novelty | The PCB still does all inference itself; **no Wi-Fi, no host, no cloud** | The artifact's value depends on it being genuinely self-contained — never compromise on this. |
 
@@ -242,13 +242,16 @@ large — distillation from a frontier model is feasible but unnecessary at this
 scale and would muddy the "every weight on this board was trained for this
 gift" story.
 
-1. `prepare_wedding.py` (replaces `data/shakespeare_char/prepare.py`):
-   downloads Gutenberg texts, normalizes whitespace, applies the BPE, splits
-   95/5 train/val, writes `train.bin / val.bin / meta.pkl`.
+1. `data/wedding/{fetch_corpus, train_tokenizer, prepare}.py`:
+   downloads 35 Gutenberg works (~18 MB / 3.3 M words), trains a 2048-vocab
+   byte-level BPE with style-tag specials, splits the corpus on blank-line
+   boundaries and inserts `<eos>` between segments so the model learns where
+   complete units end. Splits 99/1 train/val, writes
+   `train.bin / val.bin / meta.pkl`.
 2. `config/train_wedding.py` (replaces `train_micro.py`):
-   - `n_layer=6, n_head=8, n_embd=256, block_size=256, dropout=0.1, bias=False`
-   - `batch_size=64, grad_accum=4, max_iters=200_000, lr=3e-4 -> 3e-5 cosine,
-     warmup=2_000`
+   - `n_layer=6, n_head=8, n_embd=256, block_size=128, dropout=0.1, bias=False`
+   - `batch_size=64, grad_accum=4, max_iters=30000, lr=3e-4 -> 3e-5 cosine,
+     warmup=500`
    - Optionally enable **rotary position embeddings** in `model.py` instead of
      learned `wpe` — eliminates the `wpe` table and lets the model extrapolate
      past `block_size` cleanly.
@@ -270,8 +273,9 @@ from a fixed flash address; the firmware mmaps it. Reasons: 5 MB of
 | Add `arm_math.h` (CMSIS-DSP) and replace `matvec_i8i8_pc` with `arm_dot_prod_q15`-style int8/int16 inner loops | M33 SIMD-MAC instructions ~= 4x speedup |
 | Replace `fast_invsqrt` / `fast_expf` with `vsqrtf` and a small range-reduction `expf` (FPU is now native) | Cleaner code; numerical accuracy improves and the bit-hacks no longer help |
 | Add **top-k + top-p (nucleus)** sampling and a **repetition penalty** (subtract alpha from logits of recently sampled tokens) | Char-level temperature sampling masks how thin the distribution is; with 2K-vocab this matters a lot |
-| Add **prompt prefix** support: when style button picks "Sonnet," seed with `<sonnet>` token before generation | Style steering without retraining |
-| Make `BLOCK_SIZE = 256` and keep KV cache as int8 | Real sentence-length context |
+| Add **prompt prefix** support: when style button picks "Sonnet," seed with `<<SONNET>>` token before generation | Style steering without retraining |
+| Add **stop-on-`<eos>`**: break generation loop the instant the model emits token id 1 | Clean, model-decided end-of-quote when convergence is good; `MAX_GENERATE` (~40) is the fallback hard cap |
+| `BLOCK_SIZE = 128`, KV cache stays int8 (`2 × 6 × 128 × 256` = 384 KB) | Fits in RP2350's 520 KB internal SRAM with ~80 KB headroom — no PSRAM |
 | Hoist the inference loop onto **core 1** of RP2350; UI / display / button polling stays on core 0 | Display refreshes don't block generation |
 | Stream output token-by-token through a small detokenizer FIFO so that BPE's multi-byte tokens render to the OLED smoothly | Otherwise you'd see partial glyphs |
 
@@ -292,8 +296,7 @@ from a fixed flash address; the firmware mmaps it. Reasons: 5 MB of
 | Subsystem | Change | Note |
 |---|---|---|
 | MCU | RP2350B QFN-80 footprint replaces the LP-MSPM0G3507 socket | Bring out USB D+/D-, SWD, 12 MHz crystal pads, QSPI flash, optional QSPI PSRAM |
-| Flash | 16 MB W25Q128 | 5 MB weights + assets + firmware |
-| PSRAM | 8 MB IPS6404 (optional) on the second QSPI CS | Only needed if KV cache / activations grow past 520 KB SRAM |
+| Flash | 16 MB W25Q128 (SOIC-8) on RP2350's QSPI bus — single companion chip, bootrom handles XIP | ~5.3 MB weights + ~64 KB assets + ~300 KB firmware = ~5.7 MB used |
 | Display | 2.42" SSD1309 OLED breakout via SPI (4-wire SPI: SCK, MOSI, CS, DC, RES) | Or 2.13" GxEPD2-class e-paper for the wedding-stationery aesthetic |
 | Buttons | 3 -> 4 push buttons: **Generate / Style / Save / Heart** | "Save" persists the last quote to flash; "Heart" lights an extra LED and bumps a counter |
 | Indicators | 3 LEDs preserved; one upgraded to a **WS2812** driven from a single GPIO so it can pulse pink during generation | Preserves the "alive" feel without adding board area |
@@ -347,11 +350,13 @@ sitting in a header — same MCU, no fine-pitch soldering, slight loss of the
 | Region | Use | Approx size |
 |---|---|---|
 | QSPI flash 0x10000000+ | RP2350 firmware (.text/.rodata) | ~300 KB |
-| QSPI flash | `weights.bin` (model + tokenizer table + style embeddings) | ~5-6 MB |
+| QSPI flash | `weights.bin` (model + tokenizer table) | ~5.3 MB |
 | QSPI flash | Saved-quote ring buffer | 64 KB |
 | QSPI flash | Asset blob (boot art, icon font) | ~64 KB |
-| Internal SRAM | Activations + small KV cache | 128-256 KB |
-| Optional PSRAM | Full KV cache @ ctx=256, l=6 | 768 KB |
+| Internal SRAM | KV cache (`2 × 6 × 128 × 256` int8) | 384 KB |
+| Internal SRAM | Activations + logits + scratch | ~22 KB |
+| Internal SRAM | Stack + UI state + framebuffer | ~35 KB |
+| Internal SRAM | **Total used / available** | **~440 / 520 KB** |
 
 `weights.bin` layout: 16-byte header (magic, version, n_layer, n_head,
 n_embd, block_size, vocab_size), then per-tensor records `{tag, dtype, shape,
